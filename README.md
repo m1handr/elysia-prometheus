@@ -91,3 +91,7 @@ This prevents metric explosion from unique IDs in URLs.
 ## License
 
 MIT
+
+## Contributing
+
+If you want to add or improve the library or its documentation, make a pull request to this repository. Please use [bun](https://bun.sh) and format js and ts code with [prettier](https://prettier.io/) to make everything look nice.
