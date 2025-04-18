@@ -13,7 +13,7 @@ A lightweight plugin for [Elysia](https://elysiajs.com/) that exposes HTTP metri
 ## Installation
 
 ```bash
-bun install elysia-prometheus prom-client
+bun install elysia-prometheus
 ```
 
 ## Usage

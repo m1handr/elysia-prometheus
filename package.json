@@ -20,7 +20,7 @@
 		"elysia",
 		"prometheus",
 		"metrics",
-    "monitoring"
+		"monitoring"
 	],
 	"homepage": "https://github.com/m1handr/elysia-prometheus",
 	"repository": {
@@ -33,7 +33,7 @@
 		"dev": "bun example/index.ts --watch",
 		"format": "prettier --write .",
 		"build": "bun build.ts",
-		"release": "npm run build && npm publish --access public"
+		"release": "npm run format && npm run build && npm publish --access public"
 	},
 	"devDependencies": {
 		"@types/bun": "latest",
