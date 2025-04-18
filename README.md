@@ -19,7 +19,8 @@ bun install elysia-prometheus prom-client
 ## Usage
 
 ```ts
-import { Elysia } from 'elysia'
+import { sleep } from 'bun'
+import { Elysia, error } from 'elysia'
 import prometheusPlugin from 'elysia-prometheus'
 
 const app = new Elysia()
@@ -33,7 +34,15 @@ const app = new Elysia()
 			}
 		})
 	)
-	.get('/users/:id', () => 'User info')
+	.get('/', () => 'GET /')
+	.post('/', () => 'POST /')
+	.get('/delay', () => {
+		sleep(1000)
+		return 'GET /delay'
+	})
+	.get('/error/:code', ({ params }) => {
+		return error(Number.parseInt(params.code))
+	})
 	.listen(3000)
 ```
 
