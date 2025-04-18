@@ -1,0 +1,16 @@
+.git
+.github
+.gitignore
+.prettierrc
+bun.lock
+
+node_modules
+tsconfig.json
+
+tsconfig.cjs.json
+tsconfig.esm.json
+tsconfig.dts.json
+
+build.ts
+src
+example

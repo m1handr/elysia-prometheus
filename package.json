@@ -1,0 +1,51 @@
+{
+	"name": "elysia-prometheus",
+	"version": "1.0.0",
+	"description": "Prometheus metrics plugin for Elysia framework",
+	"author": {
+		"name": "m1handr",
+		"url": "https://github.com/m1handr"
+	},
+	"main": "./dist/cjs/index.js",
+	"module": "./dist/index.mjs",
+	"types": "./dist/index.d.ts",
+	"exports": {
+		".": {
+			"types": "./dist/index.d.ts",
+			"import": "./dist/index.mjs",
+			"require": "./dist/cjs/index.js"
+		}
+	},
+	"keywords": [
+		"elysia",
+		"prometheus",
+		"metrics",
+    "monitoring"
+	],
+	"homepage": "https://github.com/m1handr/elysia-prometheus",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/m1handr/elysia-prometheus.git"
+	},
+	"bugs": "https://github.com/m1handr/elysia-prometheus/issues",
+	"license": "MIT",
+	"scripts": {
+		"dev": "bun example/index.ts --watch",
+		"format": "prettier --write .",
+		"build": "bun build.ts",
+		"release": "npm run build && npm publish --access public"
+	},
+	"devDependencies": {
+		"@types/bun": "latest",
+		"prettier": "^3.5.3",
+		"tsup": "^8.4.0",
+		"elysia": ">= 1.2.0",
+		"typescript": "^5.5.3"
+	},
+	"peerDependencies": {
+		"elysia": ">= 1.2.0"
+	},
+	"dependencies": {
+		"prom-client": "^15.1.3"
+	}
+}
