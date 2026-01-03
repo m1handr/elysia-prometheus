@@ -105,6 +105,7 @@ export default (userOptions: UserPluginOptions = {}) => {
 	}
 
 	function normalizePath(path: string) {
+		if (opts.useRoutePath) return path
 		return path.replace(/\/\d+([\/?]|$)/g, '/:id$1')
 	}
 
