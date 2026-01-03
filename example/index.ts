@@ -1,6 +1,6 @@
 import { sleep } from 'bun'
 import { Elysia, error } from 'elysia'
-import prometheusPlugin from 'elysia-prometheus'
+import prometheusPlugin from '../src/index'
 
 const app = new Elysia()
 	.use(
@@ -13,6 +13,13 @@ const app = new Elysia()
 			}
 		})
 	)
+	.macro({
+		errorInMacro: {
+			async resolve() {
+				return error(418)
+			}
+		}
+	})
 	.get('/', () => 'GET /')
 	.post('/', () => 'POST /')
 	.get('/delay', () => {
@@ -21,5 +28,8 @@ const app = new Elysia()
 	})
 	.get('/error/:code', ({ params }) => {
 		return error(Number.parseInt(params.code))
+	})
+	.get('/macro-error', () => 'macro error', {
+		errorInMacro: true
 	})
 	.listen(3000)
