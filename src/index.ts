@@ -106,7 +106,9 @@ export default (userOptions: UserPluginOptions = {}) => {
 
 	function normalizePath(path: string) {
 		if (opts.useRoutePath) return path
-		return path.replace(/\/\d+([\/?]|$)/g, '/:id$1')
+		return path
+			.replace(/\/\d+(?=[\/?]|$)/g, '/:id')
+			.replace(/\/[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}(?=[\/?]|$)/gi, '/:uuid')
 	}
 
 	return new Elysia({ name: 'prometheus' })
