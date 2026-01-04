@@ -87,12 +87,12 @@ export default (userOptions: UserPluginOptions = {}) => {
 
 	function getLabels(ctx: Context) {
 		const path = opts.useRoutePath
-			? (ctx.route as string) || ctx.path
-			: ctx.path
+			? (ctx.route as string) || normalizePath(ctx.path)
+			: normalizePath(ctx.path)
 
 		const labels: Record<string, string> = {
 			method: ctx.request.method,
-			path: normalizePath(path),
+			path,
 			status: getStatusCode(ctx),
 			...opts.staticLabels
 		}
@@ -105,7 +105,6 @@ export default (userOptions: UserPluginOptions = {}) => {
 	}
 
 	function normalizePath(path: string) {
-		if (opts.useRoutePath) return path
 		return path
 			.replace(/\/\d+(?=[\/?]|$)/g, '/:id')
 			.replace(/\/[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}(?=[\/?]|$)/gi, '/:uuid')
