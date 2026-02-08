@@ -112,7 +112,7 @@ export default (userOptions: UserPluginOptions = {}) => {
 		.derive({ as: 'global' }, (ctx) => ({
 			endTimer: httpRequestDuration.startTimer(getLabels(ctx))
 		}))
-		.onAfterHandle({ as: 'global' }, (ctx) => {
+		.onAfterResponse({ as: 'global' }, (ctx) => {
 			if (ctx.path.endsWith(opts.metricsPath)) return
 			httpRequestCounter.inc(getLabels(ctx))
 			ctx.endTimer(getLabels(ctx))
