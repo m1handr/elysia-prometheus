@@ -1,9 +1,9 @@
 import { Elysia, type Context } from 'elysia'
 import {
 	collectDefaultMetrics,
-	Registry,
 	Counter,
 	Histogram,
+	Registry,
 	type CounterConfiguration,
 	type HistogramConfiguration
 } from 'prom-client'
@@ -69,7 +69,7 @@ export default (userOptions: UserPluginOptions = {}) => {
 		registers: [register]
 	} satisfies HistogramConfiguration<string>)
 
-	const getStatusCode = (ctx: Context): string => {
+	const getStatusCode = (ctx: any): string => {
 		if (
 			typeof ctx.response === 'object' &&
 			ctx.response !== null &&
@@ -85,7 +85,7 @@ export default (userOptions: UserPluginOptions = {}) => {
 		return '500'
 	}
 
-	function getLabels(ctx: Context) {
+	function getLabels(ctx: any) {
 		const path = opts.useRoutePath
 			? (ctx.route as string) || ctx.path
 			: ctx.path
@@ -113,6 +113,7 @@ export default (userOptions: UserPluginOptions = {}) => {
 			endTimer: httpRequestDuration.startTimer(getLabels(ctx))
 		}))
 		.onAfterResponse({ as: 'global' }, (ctx) => {
+			if (!ctx.endTimer) return
 			if (ctx.path.endsWith(opts.metricsPath)) return
 			httpRequestCounter.inc(getLabels(ctx))
 			ctx.endTimer(getLabels(ctx))
