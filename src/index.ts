@@ -9,15 +9,10 @@ import {
 } from 'prom-client'
 
 interface PluginOptions {
-	/** Path to metrics endpoint (default /metrics) */
 	metricsPath: string
-	/** Buckets for duration histogram (default [0.003, 0.03, 0.1, 0.3, 1.5, 10]) */
 	durationBuckets: number[]
-	/** Additional static labels for all metrics */
 	staticLabels: Record<string, string>
-	/** Dynamic labels for all metrics */
 	dynamicLabels: Record<string, (ctx: Context) => string>
-	/** Use normalized route path for metrics */
 	useRoutePath: boolean
 }
 
@@ -78,10 +73,9 @@ export default (userOptions: UserPluginOptions = {}) => {
 		) {
 			return ctx.response.code.toString()
 		}
-		if (ctx.set.status) {
+		if (ctx.set?.status) {
 			return ctx.set.status.toString() ?? 'unknown'
 		}
-
 		return '500'
 	}
 
@@ -98,7 +92,7 @@ export default (userOptions: UserPluginOptions = {}) => {
 		}
 
 		for (const [key, fn] of Object.entries(opts.dynamicLabels)) {
-			labels[key] = fn(ctx)
+			labels[key] = fn(ctx as Context)
 		}
 
 		return labels
@@ -108,23 +102,31 @@ export default (userOptions: UserPluginOptions = {}) => {
 		return path.replace(/\/\d+([\/?]|$)/g, '/:id$1')
 	}
 
+	const requestTimers = new WeakMap<Request, (labels?: any) => void>()
+
 	return new Elysia({ name: 'prometheus' })
-		.derive({ as: 'global' }, (ctx) => ({
-			endTimer: httpRequestDuration.startTimer(getLabels(ctx))
-		}))
+		.onRequest((ctx) => {
+			requestTimers.set(ctx.request, httpRequestDuration.startTimer())
+		})
 		.onAfterResponse({ as: 'global' }, (ctx) => {
-			if (!ctx.endTimer) return
 			if (ctx.path.endsWith(opts.metricsPath)) return
-			httpRequestCounter.inc(getLabels(ctx))
-			ctx.endTimer(getLabels(ctx))
+
+			const endTimer = requestTimers.get(ctx.request)
+			if (!endTimer) return
+
+			const labels = getLabels(ctx)
+			httpRequestCounter.inc(labels)
+			endTimer(labels)
 		})
 		.onError({ as: 'global' }, (ctx) => {
-			if (!ctx.endTimer) return
 			if (ctx.path.endsWith(opts.metricsPath)) return
-			// @ts-ignore
-			httpRequestCounter.inc(getLabels(ctx))
-			// @ts-ignore
-			ctx.endTimer(getLabels(ctx))
+
+			const endTimer = requestTimers.get(ctx.request)
+			if (!endTimer) return
+
+			const labels = getLabels(ctx)
+			httpRequestCounter.inc(labels)
+			endTimer(labels)
 		})
 		.get(opts.metricsPath, async () => {
 			return new Response(await register.metrics(), {
