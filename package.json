@@ -1,6 +1,6 @@
 {
 	"name": "elysia-prometheus",
-	"version": "1.1.0",
+	"version": "1.1.1",
 	"description": "Prometheus metrics plugin for Elysia framework",
 	"author": {
 		"name": "m1handr",
